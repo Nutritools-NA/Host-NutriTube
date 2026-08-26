@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BD calc</title>
+    <title>Hosp-NutriTube</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&family=Prompt:wght@600&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3221/3221626.png">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3221/3221626.png">
@@ -86,12 +86,27 @@
 
         /* ── Print Button (เพิ่มใหม่) ── */
         .btn-print { width: 100%; padding: 15px; background: linear-gradient(135deg, #00b894, #00cec9); color: white; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; font-family: 'Prompt', sans-serif; cursor: pointer; box-shadow: 0 4px 14px rgba(0,184,148,0.3); margin-top: 10px; margin-bottom: 14px; }
+        /* ── Splash Screen ── */
+        .splash { position: fixed; inset: 0; background: linear-gradient(160deg, #6c5ce7, #a29bfe); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; gap: 16px; }
+        .splash-logo { font-size: 5rem; animation: pulse 1.8s ease-in-out infinite; }
+        .splash-title { font-family: 'Prompt', sans-serif; font-size: 1.8rem; font-weight: 700; color: white; letter-spacing: 0.03em; text-align: center; }
+        .splash-sub { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-family: 'Sarabun', sans-serif; text-align: center; }
+        .btn-splash { margin-top: 24px; padding: 16px 48px; background: white; color: #6c5ce7; border: none; border-radius: 50px; font-family: 'Prompt', sans-serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.15); transition: transform 0.15s, box-shadow 0.15s; }
+        .btn-splash:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
     </style>
 </head>
 <body>
 
+<!-- ── Splash Screen ── -->
+<div class="splash" id="splashScreen">
+    <div class="splash-logo">🧪</div>
+    <div class="splash-title">Hosp-NutriTube</div>
+    <div class="splash-sub">Enteral Nutrition Calculator<br>โรงพยาบาลประสาทเชียงใหม่</div>
+    <button class="btn-splash" onclick="enterApp()">เข้าใช้งาน →</button>
+</div>
 <div class="header">
-    <h1 style="margin:0;font-size:1.2rem;font-family:'Prompt'" id="pageTitle">🥤 BD calc. ✨</h1>
+    <h1 style="margin:0;font-size:1.2rem;font-family:'Prompt'" id="pageTitle">🥤 อาหารปั่นผสม(BD) ✨</h1>
     <button id="syncBtn" onclick="syncData()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;">🔄 อัปเดตสูตร</button>
 </div>
 
@@ -210,7 +225,7 @@
 <!-- Tab Bar -->
 <nav class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('recipe',this)">
-        <span class="tab-icon">🥤</span>สูตรอาหาร
+        <span class="tab-icon">🥤</span>อาหารปั่นผสม
     </button>
     <button class="tab-btn" onclick="switchTab('med',this)">
         <span class="tab-icon">🧮</span>อาหารทาง<br>การแพทย์
@@ -232,12 +247,19 @@ function switchTab(name, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     btn.classList.add('active');
-    document.getElementById('pageTitle').textContent = name === 'recipe' ? '🥤 BD calc. ✨' : '🧮 อาหารทางการแพทย์';
+    document.getElementById('pageTitle').textContent = name === 'recipe' ? '🥤 อาหารปั่นผสม(BD) ✨' : '🧮 อาหารทางการแพทย์';
     // ── เริ่มจับเวลาอัตโนมัติเมื่อเข้าหน้าอาหารทางการแพทย์ (เพิ่มใหม่ — ไม่กระทบโค้ดเดิม) ──
     if (name === 'med') _startTiming('med', 'เข้าหน้าอาหารทางการแพทย์');
 }
 
 window.onload = () => { renderMenu(); renderLogs(); renderMedBrands(); renderMedLogs(); };
+
+function enterApp() {
+    const splash = document.getElementById('splashScreen');
+    splash.style.transition = 'opacity 0.4s ease';
+    splash.style.opacity = '0';
+    setTimeout(() => splash.style.display = 'none', 400);
+}
 
 // ── Sync ──
 async function syncData() {
@@ -1124,7 +1146,7 @@ function buildPrintHTML(d) {
         </div>
 
         <div class="doc-footer">
-            <span>BD calc. — Enteral Nutrition System</span>
+            <span>Hosp-NutriTube — Enteral Nutrition System</span>
             <span id="disp_footer">${todayTH}</span>
         </div>
     </div>
